@@ -1,11 +1,44 @@
 package org.n52.spare.kicker.rest.model;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
+@Entity
+@Table(name = "matches")
 public class Match {
 	
+	@JsonView(Views.Basic.class)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    
+    @JsonView(Views.Basic.class)
+    @ManyToOne
 	private Player home;
+    
+    @JsonView(Views.Basic.class)
+    @ManyToOne
 	private Player guest;
+	
+    @JsonView(Views.Details.class)
+    @OneToOne(cascade = CascadeType.ALL)
 	private Timeline timeline;
+	
+    @JsonView(Views.Basic.class)
+	@OneToOne(cascade = CascadeType.ALL)
 	private Score score;
+	
+	public Long getId() {
+		return id;
+	}
 	
 	public Player getHome() {
 		return home;
