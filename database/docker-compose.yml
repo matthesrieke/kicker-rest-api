@@ -1,0 +1,13 @@
+version: '3'
+services:
+  kicker-postgres:
+    image: postgres:9.6.8-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=kickerdb
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes: 
+      - ./persistence/postgres:/var/lib/postgresql/data/pgdata
+    ports: 
+      - 5432:5432
