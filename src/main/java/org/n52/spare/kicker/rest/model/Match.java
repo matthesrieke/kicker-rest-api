@@ -1,11 +1,16 @@
 package org.n52.spare.kicker.rest.model;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -19,18 +24,22 @@ public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+	
+	@JsonView(Views.Basic.class)
+	@Column(nullable = false)
+	private Date dateTime;
     
     @JsonView(Views.Basic.class)
-    @ManyToOne
+    @ManyToOne(optional = false)
 	private Player home;
     
     @JsonView(Views.Basic.class)
-    @ManyToOne
+    @ManyToOne(optional = false)
 	private Player guest;
 	
-    @JsonView(Views.Details.class)
-    @OneToOne(cascade = CascadeType.ALL)
-	private Timeline timeline;
+    @JsonView(Views.Basic.class)
+    @OneToMany(cascade = CascadeType.ALL)
+	private List<MatchEvent> events;
 	
     @JsonView(Views.Basic.class)
 	@OneToOne(cascade = CascadeType.ALL)
@@ -56,12 +65,12 @@ public class Match {
 		this.guest = guest;
 	}
 	
-	public Timeline getTimeline() {
-		return timeline;
+	public List<MatchEvent> getEvents() {
+		return events;
 	}
 	
-	public void setTimeline(Timeline timeline) {
-		this.timeline = timeline;
+	public void setEvents(List<MatchEvent> events) {
+		this.events = events;
 	}
 	
 	public Score getScore() {
@@ -70,6 +79,14 @@ public class Match {
 	
 	public void setScore(Score score) {
 		this.score = score;
+	}
+	
+	public Date getDateTime() {
+		return dateTime;
+	}
+	
+	public void setDateTime(Date dateTime) {
+		this.dateTime = dateTime;
 	}
 
 }

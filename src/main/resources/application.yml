@@ -1,6 +1,8 @@
 spring:
   application:
     name: kicker
+  jackson:
+    default-property-inclusion: non_null
   datasource:
     url: jdbc:h2:/tmp/kicker;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     platform: h2

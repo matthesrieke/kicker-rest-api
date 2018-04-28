@@ -1,0 +1,340 @@
+swagger: "2.0"
+info:
+  description: "Kicker League API"
+  version: "1.0.0"
+  title: "Kicker League API"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "kicker.internal.52north.org"
+basePath: "/v1"
+tags:
+- name: "kicker"
+- name: "match"
+- name: "player"
+- name: "ranking"
+schemes:
+- "https"
+paths:
+  /matches:
+    get:
+      tags:
+      - "match"
+      responses:
+        200:
+          description: "Matches, pageable"
+          schema:
+            $ref: "#/definitions/MatchesResponse"
+    post:
+      tags:
+      - "match"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created match object"
+        required: true
+        schema:
+          $ref: "#/definitions/Match"
+      responses:
+        200:
+          description: "Create new matches"
+          schema:
+            $ref: "#/definitions/MatchesResponse"
+  /matches/{id}:
+    get:
+      tags:
+      - "match"
+      parameters: 
+      - name: "id"
+        in: "path"
+        description: "the match id"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "one Match"
+          schema:
+            $ref: "#/definitions/Match"
+  /matches/{id}/events:
+    get:
+      tags:
+      - "match"
+      parameters: 
+      - name: "id"
+        in: "path"
+        description: "the match id"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Match events"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/MatchEvent"
+    post:
+      tags:
+      - "match"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "the match id"
+        required: true  
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Created match event object"
+        required: true
+        schema:
+          $ref: "#/definitions/MatchEvent"
+      responses:
+        200:
+          description: "Create new matches"
+          schema:
+            $ref: "#/definitions/MatchEvent"
+  /players:
+    post:
+      tags:
+      - "Player"
+      summary: "Create Player"
+      description: "This can only be done by the logged in user."
+      operationId: "createPlayer"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created player object"
+        required: true
+        schema:
+          $ref: "#/definitions/Player"
+      responses:
+        default:
+          description: "successful operation"
+  /players/{name}:
+    get:
+      tags:
+      - "Player"
+      summary: "Get Player by name"
+      description: ""
+      operationId: "getPlayerByName"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "The name that needs to be fetched. Use user1 for testing. "
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Player"
+        400:
+          description: "Invalid player supplied"
+        404:
+          description: "Player not found"
+    put:
+      tags:
+      - "Player"
+      summary: "Updated Player"
+      description: "This can only be done by the logged in Player."
+      operationId: "updatePlayer"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "name that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          $ref: "#/definitions/Player"
+      responses:
+        400:
+          description: "Invalid player supplied"
+        404:
+          description: "Player not found"
+    delete:
+      tags:
+      - "Player"
+      summary: "Delete Player"
+      description: "This can only be done by the logged in player."
+      operationId: "deletePlayer"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "The name that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        400:
+          description: "Invalid player supplied"
+        404:
+          description: "Player not found"
+  /login:
+    get:
+      tags:
+      - "Player"
+      summary: "Logs Player into the system"
+      description: ""
+      operationId: "loginPlayer"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "query"
+        description: "The user name for login"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "query"
+        description: "The password for login in clear text"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the Player"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        400:
+          description: "Invalid username/password supplied"
+  /logout:
+    get:
+      tags:
+      - "Player"
+      summary: "Logs out current logged in Player session"
+      description: ""
+      operationId: "logoutPlayer"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        default:
+          description: "successful operation"
+securityDefinitions:
+  kicker_auth:
+    type: "oauth2"
+    authorizationUrl: "https://kicker.int.52north.org/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:player: "modify your account"
+      read:player: "read your account"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  Paging:
+    type: "object"
+    properties:
+      total:
+        type: "integer"
+        format: "int32"
+      page:
+        type: "integer"
+        format: "int32"
+      size:
+        type: "integer"
+        format: "int32"
+    required: 
+      - $all
+  MatchesResponse:
+    type: "object"
+    properties:
+      paging:
+        $ref: "#/definitions/Paging"
+      matches:
+        type: "array"
+        items:
+          $ref: "#/definitions/Match"
+    required: 
+      - $all
+  Match:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      home:
+        $ref: "#/definitions/Player"
+      guest:
+        $ref: "#/definitions/Player"
+      score:
+        $ref: "#/definitions/Score"
+      events:
+        type: "array"
+        items:
+          $ref: "#/definitions/MatchEvent"
+    required: 
+      - home
+      - guest
+  Score:
+    type: "object"
+    properties:
+      home:
+        type: integer
+      guest:
+        type: integer
+    required: 
+      - $all
+  MatchEvent:
+    type: "object"
+    properties:
+      dateTime:
+        type: "object"
+        format: "date-time"
+      score:
+        $ref: "#/definitions/Score"
+      halftime:
+        type: "boolean"
+      fulltime:
+        type: "boolean"
+      fulltime:
+        type: "boolean"
+      finished:
+        type: "boolean"
+      pause:
+        type: "boolean"
+      resume:
+        type: "boolean"
+      cancel:
+        type: "boolean"
+    required: 
+      - dateTime
+  Player:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      nickName:
+        type: "string"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+    required: 
+      - id
+      - username
