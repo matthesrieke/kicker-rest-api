@@ -92,6 +92,15 @@ paths:
           description: "Create new matches"
           schema:
             $ref: "#/definitions/MatchEvent"
+  /rankings:
+    get:
+      tags:
+      - "ranking"
+      responses:
+        200:
+          description: "Rankings, pageable"
+          schema:
+            $ref: "#/definitions/RankingsResponse"
   /players:
     post:
       tags:
@@ -267,6 +276,26 @@ definitions:
           $ref: "#/definitions/Match"
     required: 
       - $all
+  RankingsResponse:
+    type: "object"
+    properties:
+      paging:
+        $ref: "#/definitions/Paging"
+      matches:
+        type: "array"
+        items:
+          $ref: "#/definitions/Rank"
+    required: 
+      - $all
+  Rank:
+    type: "object"
+    properties:
+      rank:
+        type: "integer"
+      totalMatches:
+        type: "integer"
+      player:
+        $ref: "#/definitions/Player"
   Match:
     type: "object"
     properties:
@@ -307,7 +336,7 @@ definitions:
         type: "boolean"
       fulltime:
         type: "boolean"
-      fulltime:
+      overtime:
         type: "boolean"
       finished:
         type: "boolean"

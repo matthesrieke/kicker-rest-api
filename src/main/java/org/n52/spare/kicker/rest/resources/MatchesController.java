@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.n52.spare.kicker.rest.model.Match;
 import org.n52.spare.kicker.rest.model.MatchEvent;
+import org.n52.spare.kicker.rest.model.PageableResponse;
 import org.n52.spare.kicker.rest.model.Player;
 import org.n52.spare.kicker.rest.model.Score;
 import org.n52.spare.kicker.rest.model.Views;
@@ -14,6 +15,7 @@ import org.n52.spare.kicker.rest.repositories.MatchRepository;
 import org.n52.spare.kicker.rest.repositories.PlayerRepository;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,16 +39,17 @@ public class MatchesController implements InitializingBean {
 	
 	@JsonView(Views.Basic.class)
 	@RequestMapping("")
-	public List<Match> collection(@RequestParam(required = false) Optional<Integer> page,
+	public PageableResponse<Match> collection(@RequestParam(required = false) Optional<Integer> page,
 			@RequestParam(required = false) Optional<Integer> size) {
-		return matchRepository.findAll(PageRequest.of(page.orElse(0), size.orElse(10))).getContent();
+		Page<Match> pageable = matchRepository.findAll(PageRequest.of(page.orElse(0), size.orElse(10)));
+		return PageableResponse.from(pageable);
 	}
 	
 	@JsonView(Views.Details.class)
 	@RequestMapping(params = "expanded=true")
-	public List<Match> collectionWithDetails(@RequestParam(required = false) Optional<Integer> page,
+	public PageableResponse<Match> collectionWithDetails(@RequestParam(required = false) Optional<Integer> page,
 			@RequestParam(required = false) Optional<Integer> size) {
-		return matchRepository.findAll(PageRequest.of(page.orElse(0), size.orElse(10))).getContent();
+		return collection(page, size);
 	}
 	
 	@JsonView(Views.Details.class)
@@ -75,7 +78,7 @@ public class MatchesController implements InitializingBean {
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-//		insertDummyData();
+		insertDummyData();
 	}
 	
 	public void insertDummyData() {
@@ -92,30 +95,30 @@ public class MatchesController implements InitializingBean {
 		playerRepo.save(p1);
 		playerRepo.save(p2);
 		
-		Match m = new Match();
-		m.setDateTime(new Date());
-		m.setHome(p2);
-		m.setGuest(p1);
-		Score s = new Score();
-		s.setGuest(6);
-		s.setHome(3);
-		m.setScore(s);
-		
-		List<MatchEvent> events = new ArrayList<>();
-		MatchEvent e1 = new MatchEvent();
-		e1.setDateTime(new Date());
-		e1.setGuestScore(1);
-		events.add(e1);
-		e1.setMatch(m);
-		MatchEvent e2 = new MatchEvent();
-		e2.setDateTime(new Date(e1.getDateTime().getTime() + 10000));
-		e2.setFulltime(true);
-		e2.setMatch(m);
-		events.add(e2);
-		
-		m.setEvents(events);
-		
-		matchRepository.save(m);
+//		Match m = new Match();
+//		m.setDateTime(new Date());
+//		m.setHome(p2);
+//		m.setGuest(p1);
+//		Score s = new Score();
+//		s.setGuest(6);
+//		s.setHome(3);
+//		m.setScore(s);
+//		
+//		List<MatchEvent> events = new ArrayList<>();
+//		MatchEvent e1 = new MatchEvent();
+//		e1.setDateTime(new Date());
+//		e1.setGuestScore(1);
+//		events.add(e1);
+//		e1.setMatch(m);
+//		MatchEvent e2 = new MatchEvent();
+//		e2.setDateTime(new Date(e1.getDateTime().getTime() + 10000));
+//		e2.setFulltime(true);
+//		e2.setMatch(m);
+//		events.add(e2);
+//		
+//		m.setEvents(events);
+//		
+//		matchRepository.save(m);
 	}
 
 }
