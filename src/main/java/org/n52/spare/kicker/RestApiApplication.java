@@ -1,4 +1,4 @@
-package org.n52.spare.kicker.rest;
+package org.n52.spare.kicker;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,4 +13,5 @@ public class RestApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(RestApiApplication.class, args);
 	}
+
 }

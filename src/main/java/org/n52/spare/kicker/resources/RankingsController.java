@@ -1,11 +1,11 @@
-package org.n52.spare.kicker.rest.resources;
+package org.n52.spare.kicker.resources;
 
 import java.util.Optional;
 
-import org.n52.spare.kicker.rest.model.PageableResponse;
-import org.n52.spare.kicker.rest.model.Rank;
-import org.n52.spare.kicker.rest.model.Views;
-import org.n52.spare.kicker.rest.repositories.RankRepository;
+import org.n52.spare.kicker.model.PageableResponse;
+import org.n52.spare.kicker.model.Rank;
+import org.n52.spare.kicker.model.Views;
+import org.n52.spare.kicker.repositories.RankRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

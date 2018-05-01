@@ -1,18 +1,14 @@
-package org.n52.spare.kicker.rest.resources;
+package org.n52.spare.kicker.resources;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
-import org.n52.spare.kicker.rest.model.Match;
-import org.n52.spare.kicker.rest.model.MatchEvent;
-import org.n52.spare.kicker.rest.model.PageableResponse;
-import org.n52.spare.kicker.rest.model.Player;
-import org.n52.spare.kicker.rest.model.Score;
-import org.n52.spare.kicker.rest.model.Views;
-import org.n52.spare.kicker.rest.repositories.MatchRepository;
-import org.n52.spare.kicker.rest.repositories.PlayerRepository;
+import org.n52.spare.kicker.model.Match;
+import org.n52.spare.kicker.model.PageableResponse;
+import org.n52.spare.kicker.model.Player;
+import org.n52.spare.kicker.model.Views;
+import org.n52.spare.kicker.repositories.MatchRepository;
+import org.n52.spare.kicker.repositories.PlayerRepository;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -55,6 +51,12 @@ public class MatchesController implements InitializingBean {
 	@JsonView(Views.Details.class)
 	@RequestMapping("/{id}")
 	public Match single(@PathVariable Long id) {
+		return matchRepository.findById(id).get();
+	}
+
+	@JsonView(Views.Details.class)
+	@RequestMapping("/{id}/approve")
+	public Match approve(@PathVariable Long id) {
 		return matchRepository.findById(id).get();
 	}
 	

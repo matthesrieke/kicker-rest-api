@@ -1,4 +1,4 @@
-package org.n52.spare.kicker.rest.model;
+package org.n52.spare.kicker.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -1,9 +1,9 @@
-package rankings;
+package org.n52.spare.kicker.rankings;
 
 import java.util.List;
 
-import org.n52.spare.kicker.rest.model.Match;
-import org.n52.spare.kicker.rest.model.Rank;
+import org.n52.spare.kicker.model.Match;
+import org.n52.spare.kicker.model.Rank;
 
 public interface RankingsAlgorithm {
 	

@@ -2,9 +2,11 @@ package org.n52.spare.kicker.rest.repositories;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.n52.spare.kicker.rest.model.Match;
-import org.n52.spare.kicker.rest.model.Player;
-import org.n52.spare.kicker.rest.model.Score;
+import org.n52.spare.kicker.model.Match;
+import org.n52.spare.kicker.model.Player;
+import org.n52.spare.kicker.model.Score;
+import org.n52.spare.kicker.repositories.MatchRepository;
+import org.n52.spare.kicker.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.junit4.SpringRunner;

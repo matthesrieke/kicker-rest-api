@@ -1,17 +1,16 @@
-package org.n52.spare.kicker.rest.repositories;
+package org.n52.spare.kicker.repositories;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.n52.spare.kicker.rest.model.Rank;
+import org.n52.spare.kicker.model.Rank;
+import org.n52.spare.kicker.rankings.MatchpointsAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
-
-import rankings.MatchpointsAlgorithm;
 
 @Component
 public class RankRepository {

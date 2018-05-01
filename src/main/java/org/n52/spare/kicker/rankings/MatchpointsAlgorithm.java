@@ -1,14 +1,14 @@
-package rankings;
+package org.n52.spare.kicker.rankings;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.n52.spare.kicker.rest.model.Match;
-import org.n52.spare.kicker.rest.model.Player;
-import org.n52.spare.kicker.rest.model.Rank;
-import org.n52.spare.kicker.rest.model.Score;
+import org.n52.spare.kicker.model.Match;
+import org.n52.spare.kicker.model.Player;
+import org.n52.spare.kicker.model.Rank;
+import org.n52.spare.kicker.model.Score;
 
 public class MatchpointsAlgorithm implements RankingsAlgorithm {
 
