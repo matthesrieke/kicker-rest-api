@@ -1,4 +1,4 @@
-package org.n52.spare.kicker;
+package org.n52.spare.kicker.security;
 
 import java.io.IOException;
 

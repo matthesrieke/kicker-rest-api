@@ -1,5 +1,6 @@
 package org.n52.spare.kicker.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,6 +19,7 @@ public class Player {
     private Long id;
     
 	@JsonView(Views.Basic.class)
+	@Column(unique = true)
 	private String nickName;
 	
 	@JsonView(Views.Details.class)
@@ -28,6 +30,7 @@ public class Player {
 	
 	private String email;
 	
+	@Column(nullable = false)
 	private String password;
 	
 	public String getEmail() {

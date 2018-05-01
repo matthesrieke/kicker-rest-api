@@ -5,10 +5,8 @@ import java.util.Optional;
 
 import org.n52.spare.kicker.model.Match;
 import org.n52.spare.kicker.model.PageableResponse;
-import org.n52.spare.kicker.model.Player;
 import org.n52.spare.kicker.model.Views;
 import org.n52.spare.kicker.repositories.MatchRepository;
-import org.n52.spare.kicker.repositories.PlayerRepository;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,10 +26,6 @@ public class MatchesController implements InitializingBean {
 	
 	@Autowired
 	private MatchRepository matchRepository;
-	
-	@Autowired
-	private PlayerRepository playerRepo;
-	
 	
 	@JsonView(Views.Basic.class)
 	@RequestMapping("")
@@ -84,19 +78,19 @@ public class MatchesController implements InitializingBean {
 	}
 	
 	public void insertDummyData() {
-		Player p1 = new Player();
-		p1.setNickName("Mathijsen");
-		p1.setFirstName("Matthes");
-		p1.setLastName("Rieke");
-		
-		Player p2 = new Player();
-		p2.setNickName("Staschinho");
-		p2.setFirstName("Christoph");
-		p2.setLastName("Stasch");
-		
-		playerRepo.save(p1);
-		playerRepo.save(p2);
-		
+//		Player p1 = new Player();
+//		p1.setNickName("Mathijsen");
+//		p1.setFirstName("Matthes");
+//		p1.setLastName("Rieke");
+//		
+//		Player p2 = new Player();
+//		p2.setNickName("Staschinho");
+//		p2.setFirstName("Christoph");
+//		p2.setLastName("Stasch");
+//		
+//		playerRepo.save(p1);
+//		playerRepo.save(p2);
+//		
 //		Match m = new Match();
 //		m.setDateTime(new Date());
 //		m.setHome(p2);
