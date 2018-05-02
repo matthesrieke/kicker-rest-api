@@ -5,6 +5,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -29,7 +30,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
         http
         .httpBasic().and()
             .authorizeRequests()
-                .antMatchers("/", "/matches").permitAll()
+                .antMatchers("/").permitAll()
+                .antMatchers(HttpMethod.GET, "/matches").permitAll()
+                .antMatchers(HttpMethod.POST, "/matches").authenticated()
                 .anyRequest().authenticated()
             .and().csrf()
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
