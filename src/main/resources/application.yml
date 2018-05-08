@@ -7,7 +7,7 @@ spring:
     url: jdbc:postgresql://localhost/kickerdb
     username: postgres
     password: postgres
-    driverClassName: org.postgresql.Driver
+    #driverClassName: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
@@ -18,4 +18,7 @@ spring:
         show_sql: true
         use_sql_comments: true
         format_sql: true
-#        namingStrategy: org.hibernate.cfg.ImprovedNamingStrategy
+logging:
+  level:
+    root: INFO
+    org.hibernate.engine.jdbc.env.internal: WARN
