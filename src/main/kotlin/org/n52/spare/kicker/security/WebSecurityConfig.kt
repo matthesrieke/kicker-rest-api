@@ -25,24 +25,31 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter(), InitializingBean {
     @Autowired
     private val passwordEncoder: PasswordEncoder? = null
 
+    @Autowired
+    private var userManager: RepositoryUserDetailsManager? = null
+
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http
                 .httpBasic().and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
+                .antMatchers( "/error").permitAll()
                 .antMatchers(HttpMethod.GET, "/matches").permitAll()
                 .antMatchers(HttpMethod.POST, "/matches").authenticated()
+                .antMatchers(HttpMethod.PUT, "/matches/**").authenticated()
                 .anyRequest().authenticated()
-                .and().csrf()
+                .and()
+                .csrf()
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
                 .addFilterBefore(WebMvcCorsFilter(), ChannelProcessingFilter::class.java)
+//                .csrf().disable()
     }
 
     @Bean
     public override fun userDetailsService(): UserDetailsService {
-        return RepositoryUserDetailsManager(playerRepo!!, passwordEncoder!!)
+        return this.userManager!!
     }
 
     @Bean(name = arrayOf("passwordEncoder"))
@@ -52,6 +59,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter(), InitializingBean {
 
     @Throws(Exception::class)
     override fun afterPropertiesSet() {
+        this.userManager = RepositoryUserDetailsManager(playerRepo!!, passwordEncoder!!)
         insertDummyData()
     }
 

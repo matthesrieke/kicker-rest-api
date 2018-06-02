@@ -11,3 +11,11 @@ services:
       - ./persistence/postgres:/var/lib/postgresql/data/pgdata
     ports: 
       - 5432:5432
+  kicker-config:
+    image: n52/kicker-config:latest
+    ports:
+      - 8888:8888
+  kicker-registry:
+    image: n52/kicker-registry:latest
+    ports:
+      - 8761:8761

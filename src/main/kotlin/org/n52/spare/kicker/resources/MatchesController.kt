@@ -3,13 +3,9 @@ package org.n52.spare.kicker.resources
 import java.util.Date
 import java.util.Optional
 
-import org.n52.spare.kicker.model.Match
-import org.n52.spare.kicker.model.PageableResponse
-import org.n52.spare.kicker.model.Views
 import org.n52.spare.kicker.repositories.MatchRepository
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
@@ -19,6 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 import com.fasterxml.jackson.annotation.JsonView
+import org.n52.spare.kicker.model.*
+import org.n52.spare.kicker.repositories.PlayerRepository
+import org.n52.spare.kicker.security.RepositoryUserDetailsManager
+import org.n52.spare.kicker.security.WebSecurityConfig
+import org.springframework.http.HttpMethod
+import org.springframework.security.core.Authentication
 
 @RestController
 @RequestMapping("/matches")
@@ -26,6 +28,12 @@ class MatchesController : InitializingBean {
 
     @Autowired
     private val matchRepository: MatchRepository? = null
+
+    @Autowired
+    private val playerRepo: PlayerRepository? = null
+
+    @Autowired
+    private val security: WebSecurityConfig? = null
 
     @JsonView(Views.Basic::class)
     @RequestMapping("")
@@ -44,14 +52,26 @@ class MatchesController : InitializingBean {
 
     @JsonView(Views.Details::class)
     @RequestMapping("/{id}")
-    fun single(@PathVariable id: Long?): Match {
-        return matchRepository!!.findById(id!!).get()
+    fun single(@PathVariable id: Long): Match {
+        return matchRepository!!.findById(id).get()
     }
 
     @JsonView(Views.Details::class)
-    @RequestMapping("/{id}/approve")
-    fun approve(@PathVariable id: Long?): Match {
-        return matchRepository!!.findById(id!!).get()
+    @RequestMapping("/{id}/approve", method = [RequestMethod.PUT])
+    fun approve(@PathVariable id: Long, auth: Authentication): Match {
+        var match = matchRepository!!.findById(id).get()
+
+        var requestingPlayer = (security!!.userDetailsService() as RepositoryUserDetailsManager).playerFromAuthentication(auth)
+
+        when {
+            match?.guest?.id == requestingPlayer.id -> match.guestApproved = true
+            match?.home?.id == requestingPlayer.id -> match.homeApproved = true
+            else -> throw IllegalArgumentException("Not allowed to approve match")
+        }
+
+        matchRepository!!.save(match)
+
+        return match
     }
 
     @JsonView(Views.Basic::class)
@@ -77,43 +97,47 @@ class MatchesController : InitializingBean {
     }
 
     fun insertDummyData() {
-        //		Player p1 = new Player();
-        //		p1.setNickName("Mathijsen");
-        //		p1.setFirstName("Matthes");
-        //		p1.setLastName("Rieke");
-        //
-        //		Player p2 = new Player();
-        //		p2.setNickName("Staschinho");
-        //		p2.setFirstName("Christoph");
-        //		p2.setLastName("Stasch");
-        //
-        //		playerRepo.save(p1);
-        //		playerRepo.save(p2);
-        //
-        //		Match m = new Match();
-        //		m.setDateTime(new Date());
-        //		m.setHome(p2);
-        //		m.setGuest(p1);
-        //		Score s = new Score();
-        //		s.setGuest(6);
-        //		s.setHome(3);
-        //		m.setScore(s);
-        //
-        //		List<MatchEvent> events = new ArrayList<>();
-        //		MatchEvent e1 = new MatchEvent();
-        //		e1.setDateTime(new Date());
-        //		e1.setGuestScore(1);
-        //		events.add(e1);
-        //		e1.setMatch(m);
-        //		MatchEvent e2 = new MatchEvent();
-        //		e2.setDateTime(new Date(e1.getDateTime().getTime() + 10000));
-        //		e2.setFulltime(true);
-        //		e2.setMatch(m);
-        //		events.add(e2);
-        //
-        //		m.setEvents(events);
-        //
-        //		matchRepository.save(m);
+//        val p1 = Player();
+//        p1.nickName = "Mathijsen";
+//        p1.firstName = "Matthes";
+//        p1.lastName = "Rieke";
+//        p1.password = "\$2a\$10\$sLqDPwTQ9UQT4zEzRyPIJeuQqgjRoJm6OXlYy6akFwQLCAqLHOzqq";
+//
+//        val p2 = Player();
+//        p2.nickName = "Staschinho";
+//        p2.firstName = "Christoph";
+//        p2.lastName = "Stasch";
+//        p2.password = "\$2a\$10\$sLqDPwTQ9UQT4zEzRyPIJeuQqgjRoJm6OXlYy6akFwQLCAqLHOzqq";
+//
+//        playerRepo!!.save(p1);
+//        playerRepo!!.save(p2);
+//
+//        val m = Match();
+//        m.dateTime = Date();
+//        m.home = p2;
+//        m.guest = p1;
+//        m.guestApproved = true;
+//        val s = Score();
+//        s.guest = 6;
+//        s.home = 3;
+//        m.score = s;
+//        m.homeApproved = false;
+//
+//        val events = ArrayList<MatchEvent>();
+//        val e1 = MatchEvent();
+//        e1.dateTime = Date();
+//        e1.guestScore = 1;
+//        events.add(e1);
+//        e1.match = m;
+//        val e2 = MatchEvent();
+//        e2.dateTime = Date(e1.dateTime!!.getTime() + 10000);
+//        e2.fulltime = true;
+//        e2.match = m;
+//        events.add(e2);
+//
+//        m.events = events;
+//
+//        matchRepository!!.save(m);
     }
 
 }

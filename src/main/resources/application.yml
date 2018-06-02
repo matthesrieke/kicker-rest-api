@@ -22,3 +22,4 @@ logging:
   level:
     root: INFO
     org.hibernate.engine.jdbc.env.internal: WARN
+    org.springframework.security: DEBUG

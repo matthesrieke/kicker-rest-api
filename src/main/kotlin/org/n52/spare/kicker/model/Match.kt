@@ -41,7 +41,14 @@ class Match {
     var events: List<MatchEvent>? = null
 
     @JsonView(Views.Basic::class)
-    @OneToOne(cascade = arrayOf(CascadeType.ALL))
+    @OneToOne(cascade = arrayOf(CascadeType.ALL), optional = false)
     var score: Score? = null
 
+    @JsonView(Views.Basic::class)
+    @Column(nullable = false)
+    var homeApproved: Boolean? = false
+
+    @JsonView(Views.Basic::class)
+    @Column(nullable = false)
+    var guestApproved: Boolean? = false
 }

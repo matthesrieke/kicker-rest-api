@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.UserDetailsManager
+import org.springframework.stereotype.Component
 
 class RepositoryUserDetailsManager(private val playerRepo: PlayerRepository, private val passwordEncoder: PasswordEncoder) : UserDetailsManager {
 
@@ -49,6 +50,12 @@ class RepositoryUserDetailsManager(private val playerRepo: PlayerRepository, pri
     override fun userExists(username: String): Boolean {
         val opt = this.playerRepo.findByName(username)
         return opt.isPresent
+    }
+
+    public fun playerFromAuthentication(auth: Authentication): Player {
+        val details = auth?.principal as UserDetails
+        val playerOpt = playerRepo.findByName(details.username)
+        return playerOpt.get()
     }
 
     private fun fromPlayer(p: Player): UserDetails {
