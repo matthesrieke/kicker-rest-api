@@ -28,16 +28,11 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter(), InitializingBean {
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http
-                .httpBasic().and()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers(HttpMethod.GET, "/matches").permitAll()
-                .antMatchers(HttpMethod.POST, "/matches").authenticated()
-                .anyRequest().authenticated()
-                .and().csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .antMatchers("/**").permitAll()
                 .and()
                 .addFilterBefore(WebMvcCorsFilter(), ChannelProcessingFilter::class.java)
+                .csrf().disable();
     }
 
     @Bean

@@ -1,8 +1,8 @@
 package org.n52.spare.kicker.repositories
 
+import org.n52.spare.kicker.model.Player
 import java.util.Optional
 
-import org.n52.spare.kicker.model.Player
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.data.repository.query.Param

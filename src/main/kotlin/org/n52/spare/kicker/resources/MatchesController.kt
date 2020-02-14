@@ -3,13 +3,9 @@ package org.n52.spare.kicker.resources
 import java.util.Date
 import java.util.Optional
 
-import org.n52.spare.kicker.model.Match
-import org.n52.spare.kicker.model.PageableResponse
-import org.n52.spare.kicker.model.Views
 import org.n52.spare.kicker.repositories.MatchRepository
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
@@ -19,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 import com.fasterxml.jackson.annotation.JsonView
+import org.n52.spare.kicker.model.*
+import org.n52.spare.kicker.repositories.PlayerRepository
+import org.springframework.data.domain.Sort
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @RestController
 @RequestMapping("/matches")
@@ -27,11 +27,14 @@ class MatchesController : InitializingBean {
     @Autowired
     private val matchRepository: MatchRepository? = null
 
+    @Autowired
+    private val playerRepository: PlayerRepository? = null
+
     @JsonView(Views.Basic::class)
     @RequestMapping("")
     fun collection(@RequestParam(required = false) page: Optional<Int>,
                    @RequestParam(required = false) size: Optional<Int>): PageableResponse<Match> {
-        val pageable = matchRepository!!.findAll(PageRequest.of(page.orElse(0), size.orElse(10)))
+        val pageable = matchRepository!!.findAll(PageRequest.of(page.orElse(0), size.orElse(10), Sort.by(Sort.Direction.DESC,"dateTime")))
         return PageableResponse.from(pageable)
     }
 
@@ -66,54 +69,85 @@ class MatchesController : InitializingBean {
                 match.dateTime = Date()
             }
 
+            this.resolvePlayers(match);
+
             return matchRepository!!.save<Match?>(match)
         }
         throw IllegalArgumentException("no match object found")
     }
 
+    fun resolvePlayers(match: Match): Match {
+        val guest = playerRepository!!.findByName(match.guest.nickName);
+        val home = playerRepository!!.findByName(match.home.nickName);
+
+        if (!guest.isPresent) {
+            throw IllegalArgumentException("Guest player '" + match.guest.nickName + "' not found");
+        }
+
+        if (!home.isPresent) {
+            throw IllegalArgumentException("Home player '" + match.home.nickName + "' not found");
+        }
+
+        match.guest = guest.get();
+        match.home = home.get();
+
+        return match;
+    }
+
     @Throws(Exception::class)
     override fun afterPropertiesSet() {
-        insertDummyData()
+//        insertDummyData()
     }
 
     fun insertDummyData() {
-        //		Player p1 = new Player();
-        //		p1.setNickName("Mathijsen");
-        //		p1.setFirstName("Matthes");
-        //		p1.setLastName("Rieke");
-        //
-        //		Player p2 = new Player();
-        //		p2.setNickName("Staschinho");
-        //		p2.setFirstName("Christoph");
-        //		p2.setLastName("Stasch");
-        //
-        //		playerRepo.save(p1);
-        //		playerRepo.save(p2);
-        //
-        //		Match m = new Match();
-        //		m.setDateTime(new Date());
-        //		m.setHome(p2);
-        //		m.setGuest(p1);
-        //		Score s = new Score();
-        //		s.setGuest(6);
-        //		s.setHome(3);
-        //		m.setScore(s);
-        //
-        //		List<MatchEvent> events = new ArrayList<>();
-        //		MatchEvent e1 = new MatchEvent();
-        //		e1.setDateTime(new Date());
-        //		e1.setGuestScore(1);
-        //		events.add(e1);
-        //		e1.setMatch(m);
-        //		MatchEvent e2 = new MatchEvent();
-        //		e2.setDateTime(new Date(e1.getDateTime().getTime() + 10000));
-        //		e2.setFulltime(true);
-        //		e2.setMatch(m);
-        //		events.add(e2);
-        //
-        //		m.setEvents(events);
-        //
-        //		matchRepository.save(m);
+//        matchRepository!!.deleteAll()
+//        playerRepository!!.deleteAll()
+//
+//        val p1 = Player();
+//        p1.nickName = "Mathijsen"
+//        p1.firstName = "Matthes"
+//        p1.lastName = "Rieke"
+//        p1.password = BCryptPasswordEncoder().encode("asdf")
+//
+//
+//        val p2 = Player();
+//        p2.nickName = "Staschinho"
+//        p2.firstName = "Christoph"
+//        p2.lastName = "Stasch"
+//        p2.password = BCryptPasswordEncoder().encode("asdf")
+//
+//        playerRepository!!.save(p1);
+//        playerRepository!!.save(p2);
+
+        val p1 = playerRepository!!.findByName("Mathijsen")
+        val p2 = playerRepository!!.findByName("Staschinho")
+
+        val m = Match()
+        m.dateTime = Date()
+        m.home = p2.get()
+        m.guest = p1.get()
+
+        val s = Score()
+        s.guest = 6
+        s.home = 0
+        m.score = s
+
+        val events = mutableListOf<MatchEvent>()
+        val e1 = MatchEvent()
+        e1.dateTime = Date()
+        e1.guestScore = 1
+        events.add(e1)
+        e1.match = m
+
+        val e2 = MatchEvent()
+        e2.dateTime = Date(e1.dateTime.time + 10000)
+        e2.fulltime = true
+        e2.match = m
+        events.add(e2)
+
+        m.events = events
+
+        matchRepository!!.save(m)
     }
 
 }

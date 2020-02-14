@@ -2,8 +2,6 @@ package org.n52.spare.kicker.security
 
 import java.util.Optional
 
-import org.n52.spare.kicker.model.Player
-import org.n52.spare.kicker.model.Views
 import org.n52.spare.kicker.repositories.PlayerRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
@@ -13,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 import com.fasterxml.jackson.annotation.JsonView
+import org.n52.spare.kicker.model.Player
+import org.n52.spare.kicker.model.Views
 
 @RestController
 @RequestMapping("")

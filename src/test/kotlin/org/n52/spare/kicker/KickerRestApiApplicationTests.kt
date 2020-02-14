@@ -1,4 +1,4 @@
-package org.n52.spare.kicker.kickerrestapi
+package org.n52.spare.kicker
 
 import org.junit.Test
 import org.junit.runner.RunWith

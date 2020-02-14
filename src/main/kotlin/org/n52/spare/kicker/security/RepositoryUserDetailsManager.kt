@@ -1,10 +1,7 @@
 package org.n52.spare.kicker.security
 
-import java.util.Optional
-
 import org.n52.spare.kicker.model.Player
 import org.n52.spare.kicker.repositories.PlayerRepository
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
